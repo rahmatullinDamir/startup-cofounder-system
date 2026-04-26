@@ -1,54 +1,37 @@
+import os
 from neo4j import GraphDatabase
+from app.observability.langfuse_client import LangfuseClient
 
 
 class Neo4jClient:
 
     def __init__(self):
-        self.driver = GraphDatabase.driver(
-            "bolt://neo4j:7687",
-            auth=("neo4j", "password")
-        )
+        self.uri = os.getenv("NEO4J_URI", "bolt://neo4j:7687")
+        self.user = os.getenv("NEO4J_USER", "neo4j")
+        self.password = os.getenv("NEO4J_PASSWORD", "password")
+        self.langfuse = LangfuseClient()
+        
+        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
 
-    def create_node(self, label, props):
-        with self.driver.session() as session:
-            result = session.run(
-                f"CREATE (n:{label} $props) RETURN id(n)",
-                props=props
+    def query(self, cypher, params=None):
+        trace = self.langfuse.client.trace(name="neo4j_query")
+        
+        try:
+            with self.driver.session() as session:
+                result = session.run(cypher, params or {})
+                data = [record.data() for record in result]
+                
+            trace.update(
+                input={"cypher": cypher, "params": params},
+                output={"rows": len(data)},
+                metadata={"status": "ok"}
             )
-
-            return result.single()[0]
-
-    def create_rel(self, a, b, rel):
-        with self.driver.session() as session:
-            session.run(
-                """
-                MATCH (x),(y)
-                WHERE id(x)=$a AND id(y)=$b
-                CREATE (x)-[:REL]->(y)
-                """,
-                a=a, b=b
+            return data
+        except Exception as e:
+            trace.update(
+                metadata={"status": "error", "error": str(e)}
             )
+            raise
 
-    def get_related_ideas(self, query):
-        return self.db.query("""
-            MATCH (i:Idea)-[r]->(e)
-            WHERE i.content CONTAINS $query
-            RETURN i, e
-        """, {"query": query})
-from neo4j import GraphDatabase
-
-
-class Neo4jClient:
-
-    def __init__(self):
-
-        self.driver = GraphDatabase.driver(
-            "bolt://neo4j:7687",
-            auth=("neo4j", "password")
-        )
-
-    def query(self, query, params=None):
-
-        with self.driver.session() as session:
-            result = session.run(query, params or {})
-            return [r.data() for r in result]
+    def close(self):
+        self.driver.close()

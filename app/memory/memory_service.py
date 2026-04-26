@@ -61,7 +61,7 @@ class MemoryService:
         })
 
     # -------------------------
-    # READ (🔥 КЛЮЧЕВОЕ)
+    # READ
     # -------------------------
 
     def get_similar_failures(self):
@@ -95,19 +95,35 @@ class MemoryService:
 
         return result[0]["idea"] if result else None
 
+    # -------------------------
+    # CHECKPOINT / ROLLBACK
+    # -------------------------
 
-def store_checkpoint(self, state):
-    return self.graph.add_node(
-        type="checkpoint",
-        content=state
-    )
+    def store_checkpoint(self, idea_id, idea_content):
+        self.db.query("""
+            MATCH (i:Idea) WHERE id(i) = $id
+            CREATE (c:Checkpoint {content: $content, timestamp: timestamp()})
+            CREATE (i)-[:HAS_CHECKPOINT]->(c)
+        """, {
+            "id": idea_id,
+            "content": str(idea_content)
+        })
 
-def rollback(self):
+    def rollback(self):
+        result = self.db.query("""
+            MATCH (i:Idea)-[:HAS_CHECKPOINT]->(c)
+            RETURN i.content as idea, i.id as id
+            ORDER BY c.timestamp DESC
+            LIMIT 1
+        """)
 
-    last_good = self.graph.query(
-        type="checkpoint",
-        order="desc",
-        limit=1
-    )
+        if not result:
+            return None
 
-    return last_good
+        return {
+            "idea": result[0]["idea"],
+            "idea_id": result[0]["id"]
+        }
+
+    def close(self):
+        self.db.close()
