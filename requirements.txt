@@ -1,5 +1,10 @@
 requests
-neo4j
-langfuse
+neo4j>=5.15.0
+langfuse>=2.0.0
 pydantic
 python-dotenv
+graphiti-core>=0.1.0
+aiohttp
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0

@@ -1,6 +1,9 @@
 import os
+import logging
 from neo4j import GraphDatabase
 from app.observability.langfuse_client import LangfuseClient
+
+logger = logging.getLogger(__name__)
 
 
 class Neo4jClient:
@@ -11,7 +14,14 @@ class Neo4jClient:
         self.password = os.getenv("NEO4J_PASSWORD", "password")
         self.langfuse = LangfuseClient()
         
-        self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
+        # Connection pooling для высокой нагрузки
+        self.driver = GraphDatabase.driver(
+            self.uri,
+            auth=(self.user, self.password),
+            max_connection_pool_size=50,
+            connection_acquisition_timeout=30,
+            max_connection_lifetime=3600
+        )
 
     def check_connection(self):
         """Проверка подключения к Neo4j."""
@@ -19,7 +29,8 @@ class Neo4jClient:
             with self.driver.session() as session:
                 session.run("RETURN 1")
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"Neo4j connection check failed: {e}")
             return False
 
     def query(self, cypher, params=None):
