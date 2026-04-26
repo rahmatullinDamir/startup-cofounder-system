@@ -52,6 +52,10 @@ async def generate(request: GenerateRequest):
             raise HTTPException(status_code=500, detail="Orchestrator returned None")
         
         if isinstance(result, dict):
+            # Если валидатор отклонил запрос, возвращаем ошибку
+            if result.get("error"):
+                raise HTTPException(status_code=400, detail=result["error"])
+            
             return GenerateResponse(
                 idea=result.get("idea"),
                 critique=result.get("critique"),

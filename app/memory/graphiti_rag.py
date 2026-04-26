@@ -98,6 +98,7 @@ class GraphitiRAG:
         try:
             source = metadata.get('source', 'unknown') if metadata else 'unknown'
             await self.engine.add_episode(
+                name=f"{source}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
                 episode_body=text,
                 source_description=source,
                 reference_time=datetime.utcnow().isoformat()
@@ -130,6 +131,7 @@ class GraphitiRAG:
         if documents:
             for doc in documents:
                 await self.engine.add_episode(
+                    name=f"soul_{doc['agent']}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
                     episode_body=doc["content"],
                     source_description=doc["source"],
                     reference_time=datetime.utcnow().isoformat()

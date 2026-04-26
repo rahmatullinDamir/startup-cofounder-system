@@ -1,0 +1,99 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Ideation Agent
+
+You are a hypothesis generator.
+
+## Identity:
+You are a creative but structured ideation engine.
+
+## Responsibilities:
+- generate new startup hypotheses
+- ensure diversity of ideas
+- avoid repetition
+- incorporate past failures when provided
+
+## Forbidden:
+- evaluating ideas
+- market analysis
+- criticizing outputs
+
+## Principle:
+Maximize novelty while keeping structured output.
+    
+    [SYSTEM PROMPT]
+    You are Ideation Agent.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "problem": "Студенты испытывают трудности с поиском доступных стажировок",
+  "solution": "Платформа на базе ИИ для подбора микростажировок",
+  "target_audience": "Студенты университетов в возрасте 18-24 лет",
+  "value_proposition": "Доступ к оплачиваемым краткосрочным проектам без требований к резюме",
+  "assumptions": ["Студенты хотят гибкой работы", "Компаниям нужен дешёвый talent"],
+  "success_metrics": ["500 пользователей за 3 месяца", "80% уровень удовлетворённости"]
+}
+
+Now generate your response in the same JSON format (in RUSSIAN):
+
+{
+  "problem": "...",
+  "solution": "...",
+  "target_audience": "...",
+  "value_proposition": "...",
+  "assumptions": [],
+  "success_metrics": []
+}
+
+    
+    [SKILL]
+    # SKILL: Generate Startup Idea
+
+## Goal
+Generate a structured startup hypothesis.
+
+## Requirements
+- Must be realistic
+- Must not be generic
+- Must include clear problem
+
+## Output format (STRICT JSON)
+
+{
+  "problem": "",
+  "solution": "",
+  "target_audience": "",
+  "value_proposition": "",
+  "assumptions": [],
+  "success_metrics": []
+}
+
+    {
+    DYNAMIC PART
+    }
+
+    Придумай идею для стартапа в сфере образования
+    
+
+[BEST IDEAS (score >= 7)]
+[{'idea': "{'problem': 'Безопасность и конфиденциальность студентов в онлайн-образовании', 'solution': 'Платформа по созданию и обмену безопасными и конфиденциальными обучающими материалами с поддержкой ИИ, направленной на выявление потенциальных уязвимостей', 'target_audience': 'Студенты universities в возрасте 18-24 лет', 'value_proposition': 'Доступные, безопасные и конфиденциальные обучающие материалы для улучшения когнитивных способностей и достижения образовательных целей', 'assumptions': ['Студенты хотят доступ к безопасным и конфиденциальным ресурсам', 'Исходный материал требует значительных затрат на создание'], 'success_metrics': ['80% студентов сообщают о улучшении когнитивных способностей', '50% студентов зарегистрированы в платформе за первые 6 месяцев']}", 'score': 8.2}, {'idea': "{'problem': 'Недостаточное качество образовательных ресурсов для студентов с осложнёнными психическими заболеваниями', 'solution': 'Платформа по созданию и обмену индивидуализированным обучающимиmaterialами с поддержкой ИИ, направленной на улучшение когнитивных способностей', 'target_audience': 'Студенты с осложнёнными психическими заболеваниями (14-25 лет)', 'value_proposition': 'Доступные, индивидуализированные обучающие материалы для улучшения когнитивных способностей и достижения образовательных целей', 'assumptions': ['Студенты хотят доступ к персонализированным ресурсам', 'Исходный материал требует значительных затрат на создание'], 'success_metrics': ['80% студентов сообщают о улучшении когнитивных способностей', '50% студентов зарегистрированы в платформе за первые 6 месяцев']}", 'score': 8.2}]
+
+Use the context above to generate a unique, improved idea.
+
+=== RAW RESPONSE ===
+{
+  "problem": "Недостаточное качество образовательных ресурсов для студентов с осложнёнными психическими заболеваниями",
+  "solution": "Платформа по созданию и обмену индивидуализированным обучающими материалами с поддержкой ИИ, направленной на улучшение когнитивных способностей",
+  "target_audience": "Студенты с осложнёнными психическими заболеваниями (14-25 лет)",
+  "value_proposition": "Доступные, индивидуализированные обучающие материалы для улучшения когнитивных способностей и достижения образовательных целей",
+  "assumptions": ["Студенты хотят доступ к персонализированным ресурсам", "Исходный материал требует значительных затрат на создание"],
+  "success_metrics": ["80% студентов сообщают о улучшении когнитивных способностей", "50% студентов зарегистрированы в платформе за первые 6 месяцев"]
+}
