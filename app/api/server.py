@@ -47,11 +47,20 @@ async def generate(request: GenerateRequest):
     try:
         orchestrator = get_orchestrator()
         result = orchestrator.run(request.prompt)
-        return GenerateResponse(
-            idea=result.get("idea"),
-            critique=result.get("critique"),
-            plan=result.get("plan")
-        )
+        
+        if result is None:
+            raise HTTPException(status_code=500, detail="Orchestrator returned None")
+        
+        if isinstance(result, dict):
+            return GenerateResponse(
+                idea=result.get("idea"),
+                critique=result.get("critique"),
+                plan=result.get("plan")
+            )
+        
+        raise HTTPException(status_code=500, detail=f"Unexpected result type: {type(result)}")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Generate error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

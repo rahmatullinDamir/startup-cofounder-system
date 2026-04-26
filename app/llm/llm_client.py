@@ -4,9 +4,8 @@ import time
 import re
 import os
 import logging
-import threading
 from pathlib import Path
-from app.observability.langfuse_client import LangfuseClient
+from app.observability.langfuse_client import get_langfuse_client
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -15,22 +14,15 @@ logging.basicConfig(level=logging.INFO)
 class LLMClient:
 
     def __init__(self):
-        self.model = os.getenv('LLM_MODEL', 'qwen3.5:2b')
+        self.model = os.getenv('LLM_MODEL', 'llama3.2:3b')
         self.url = os.getenv('LLM_URL', 'http://host.docker.internal:11434/api/generate')
-        self.timeout = int(os.getenv('LLM_TIMEOUT', '60'))  # Timeout in seconds
-        self._langfuse = None  # Lazy initialization per thread
-        self._lock = threading.Lock()
+        self.timeout = int(os.getenv('LLM_TIMEOUT', '180'))
         self._ensure_log_dir()
 
     @property
     def langfuse(self):
-        """Lazy thread-safe initialization of Langfuse client."""
-        if self._langfuse is None:
-            with self._lock:
-                if self._langfuse is None:
-                    from app.observability.langfuse_client import LangfuseClient
-                    self._langfuse = LangfuseClient()
-        return self._langfuse
+        """Lazy initialization - returns global singleton."""
+        return get_langfuse_client()
 
     def _ensure_log_dir(self):
         self.log_dir = Path(__file__).parent.parent.parent / 'llm_logs'

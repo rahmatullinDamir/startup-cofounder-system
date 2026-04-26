@@ -15,15 +15,15 @@ class AutoEvaluator:
         self.enabled = enabled
         self.langfuse = LangfuseClient()
         self._lock = threading.Lock()
-        
+
         self._total_requests = 0
         self._successful_requests = 0
         self._failed_requests = 0
         self._total_latency = 0.0
         self._request_latencies = []
 
-    def evaluate_request(self, request_id: str, input_data: str, output_data: Dict[str, Any], 
-                        latency: float, status: str = "success", error: Optional[str] = None):
+    def evaluate_request(self, request_id: str, input_data: str, output_data: Dict[str, Any],
+                         latency: float, status: str = "success", error: Optional[str] = None):
         if not self.enabled:
             return
 
@@ -80,16 +80,17 @@ class AutoEvaluator:
     def get_metrics(self) -> Dict[str, Any]:
         with self._lock:
             if self._total_requests == 0:
-                return {"total_requests": 0, "success_rate": 0.0, "avg_latency": 0.0, "p50_latency": 0.0, "p95_latency": 0.0, "p99_latency": 0.0}
+                return {"total_requests": 0, "success_rate": 0.0, "avg_latency": 0.0, "p50_latency": 0.0,
+                        "p95_latency": 0.0, "p99_latency": 0.0}
 
             success_rate = self._successful_requests / self._total_requests
             avg_latency = self._total_latency / self._total_requests
             sorted_latencies = sorted(self._request_latencies)
             n = len(sorted_latencies)
-            
+
             p50 = sorted_latencies[int(n * 0.50)] if n > 0 else 0
             p95 = sorted_latencies[int(n * 0.95)] if n > 0 else 0
-            p99 = sorted_latencies[min(int(n * 0.99), n-1)] if n > 0 else 0
+            p99 = sorted_latencies[min(int(n * 0.99), n - 1)] if n > 0 else 0
 
             return {
                 "total_requests": self._total_requests,
@@ -106,6 +107,7 @@ class AutoEvaluator:
 _evaluator = None
 _evaluator_lock = threading.Lock()
 
+
 def get_auto_evaluator() -> AutoEvaluator:
     global _evaluator
     if _evaluator is None:
@@ -115,10 +117,12 @@ def get_auto_evaluator() -> AutoEvaluator:
                 _evaluator = AutoEvaluator(enabled=enabled)
     return _evaluator
 
-def evaluate_request(request_id: str, input_data: str, output_data: Dict[str, Any], 
-                    latency: float, status: str = "success", error: Optional[str] = None):
+
+def evaluate_request(request_id: str, input_data: str, output_data: Dict[str, Any],
+                     latency: float, status: str = "success", error: Optional[str] = None):
     evaluator = get_auto_evaluator()
     evaluator.evaluate_request(request_id, input_data, output_data, latency, status, error)
+
 
 def get_metrics() -> Dict[str, Any]:
     evaluator = get_auto_evaluator()

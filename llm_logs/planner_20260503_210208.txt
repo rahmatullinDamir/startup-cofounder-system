@@ -1,0 +1,133 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Planner Agent
+
+You are a planning and structuring agent.
+
+## Identity:
+You transform validated ideas into execution plans.
+
+## Responsibilities:
+- decompose ideas into steps
+- define execution roadmap
+- structure phases logically
+
+## Forbidden:
+- evaluating ideas
+- changing hypothesis meaning
+
+## Principle:
+Only operate on accepted hypotheses.
+    
+    [SYSTEM PROMPT]
+    You are Planner Agent. Create a detailed implementation roadmap.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Исследование и валидация",
+      "duration": "2-4 недели",
+      "tasks": [
+        "Провести опрос среди целевой аудитории",
+        "Проанализировать конкурентов",
+        "Создать прототип MVP"
+      ]
+    },
+    {
+      "phase": "Фаза 2: Разработка MVP",
+      "duration": "4-8 недель",
+      "tasks": [
+        "Разработать backend API",
+        "Создать frontend интерфейс",
+        "Интегрировать ИИ-модель"
+      ]
+    },
+    {
+      "phase": "Фаза 3: Тестирование и запуск",
+      "duration": "2-3 недели",
+      "tasks": [
+        "Провести бета-тестирование",
+        "Собрать обратную связь",
+        "Запустить публичный релиз"
+      ]
+    }
+  ]
+}
+
+Now create the roadmap (in RUSSIAN):
+
+{
+  "roadmap": [
+    {
+      "phase": "...",
+      "duration": "...",
+      "tasks": []
+    }
+  ]
+}
+
+    
+    [SKILL]
+    # SKILL: Build Roadmap
+
+## Goal
+Transform idea into execution plan.
+
+## Output format
+
+{
+  "roadmap": [
+    {
+      "phase": "",
+      "tasks": [],
+      "duration": ""
+    }
+  ]
+}
+Now create a roadmap for the given idea. Return exactly 3-5 phases in the "roadmap" array. Each phase must have "phase", "tasks" (array of strings), and "duration" fields.
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Недостаточное качество образовательных ресурсов для студентов с осложнёнными психическими заболеваниями', 'solution': 'Платформа по созданию и обмену индивидуализированным обучающимиmaterialами с поддержкой ИИ, направленной на улучшение когнитивных способностей', 'target_audience': 'Студенты с осложнёнными психическими заболеваниями (14-25 лет)', 'value_proposition': 'Доступные, индивидуализированные обучающие материалы для улучшения когнитивных способностей и достижения образовательных целей', 'assumptions': ['Студенты хотят доступ к персонализированным ресурсам', 'Исходный материал требует значительных затрат на создание'], 'success_metrics': ['80% студентов сообщают о улучшении когнитивных способностей', '50% студентов зарегистрированы в платформе за первые 6 месяцев']}
+    
+
+=== RAW RESPONSE ===
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Разработка платформы",
+      "tasks": [
+        "Разработать основную структуру платформы",
+        "Интегрировать ИИ-модель"
+      ],
+      "duration": "8-12 недель"
+    },
+    {
+      "phase": "Фаза 2: Создание обучающих материалов",
+      "tasks": [
+        "Создать базу данных для индивидуализированных ресурсов",
+        "Разработать алгоритм personalization"
+      ],
+      "duration": "4-8 недель"
+    },
+    {
+      "phase": "Фаза 3: Тестирование и запуск",
+      "tasks": [
+        "Провести внутреннее тестирование",
+        "Собрать обратную связь от Early Adopters"
+      ],
+      "duration": "2-3 недели"
+    }
+  ]
+}

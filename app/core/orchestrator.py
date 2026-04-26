@@ -1,3 +1,5 @@
+import threading
+
 import os
 import logging
 from app.core.event_bus import EventBus
@@ -7,7 +9,7 @@ from app.agents.ideation import run_ideation, set_tools
 from app.agents.critic import run_critic
 from app.agents.planner import run_planner
 from app.memory.memory_service import MemoryService
-from app.observability.langfuse_client import LangfuseClient
+from app.observability.langfuse_client import get_langfuse_client
 from app.tools.tool_registry import ToolRegistry
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,7 @@ class Orchestrator:
         self.bus = EventBus()
         self.memory = MemoryService()
         self.failure_detector = FailureDetector(threshold=3)
-        self.langfuse = LangfuseClient()
+        self.langfuse = get_langfuse_client()
         self.max_attempts = max_attempts
         self._attempt_count = 0
         self._attempt_lock = threading.Lock()  # Thread safety для _attempt_count

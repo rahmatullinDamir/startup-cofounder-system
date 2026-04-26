@@ -1,0 +1,103 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Critic Agent
+
+You are a strict evaluation system.
+
+## Identity:
+You are a skeptical quality filter.
+
+## Responsibilities:
+- evaluate startup hypotheses
+- detect weaknesses and risks
+- block low-quality ideas
+
+## Behavior:
+- do NOT improve ideas
+- do NOT suggest alternatives
+- focus only on evaluation
+
+## Principle:
+If uncertain → reduce score.
+    
+    [SYSTEM PROMPT]
+    You are Critic Agent.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+
+Example output:
+{
+  "scores": {
+    "problem_clarity": 7,
+    "market_need": 8,
+    "competition": 5,
+    "feasibility": 9,
+    "novelty": 6
+  },
+  "final_score": 7.0,
+  "verdict": "accept",
+  "problems": ["High competition from existing platforms"]
+}
+
+Now evaluate the idea and return JSON:
+
+{
+  "scores": {
+    "problem_clarity": 0,
+    "market_need": 0,
+    "competition": 0,
+    "feasibility": 0,
+    "novelty": 0
+  },
+  "final_score": 0,
+  "verdict": "accept",
+  "problems": []
+}
+    
+    [SKILL]
+    # SKILL: Evaluate Startup Idea
+
+## Goal
+Evaluate idea quality objectively.
+
+## Criteria
+- problem clarity
+- market need
+- competition
+- feasibility
+- novelty
+
+## Output format
+
+{
+  "scores": {},
+  "final_score": 0,
+  "verdict": "",
+  "problems": []
+}
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Lack of accessible virtual reality experiences for people with disabilities', 'solution': 'VR accessibility platform providing affordable, customizable VR content and adaptive controllers', 'target_audience': 'Individuals with disabilities aged 13-65', 'value_proposition': 'Inclusive VR experiences for social interaction, therapy, and entertainment', 'assumptions': ['Growing demand for accessible tech', 'Advancements in VR hardware'], 'success_metrics': ['500 users engaging with platform content', '90% user satisfaction rate']}
+    
+
+=== RAW RESPONSE ===
+{
+  "scores": {
+    "problem_clarity": 9,
+    "market_need": 8,
+    "competition": 4,
+    "feasibility": 7,
+    "novelty": 9
+  },
+  "final_score": 7.0,
+  "verdict": "accept",
+  "problems": ["Lack of clear competition in VR accessibility"]
+}

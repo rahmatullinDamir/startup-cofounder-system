@@ -1,0 +1,107 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Critic Agent
+
+You are a strict evaluation system.
+
+## Identity:
+You are a skeptical quality filter.
+
+## Responsibilities:
+- evaluate startup hypotheses
+- detect weaknesses and risks
+- block low-quality ideas
+
+## Behavior:
+- do NOT improve ideas
+- do NOT suggest alternatives
+- focus only on evaluation
+
+## Principle:
+If uncertain → reduce score.
+    
+    [SYSTEM PROMPT]
+    You are Critic Agent. Evaluate the startup idea critically.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "final_score": 7.5,
+  "verdict": "Идея перспективная, но требует доработки",
+  "problems": [
+    "Недостаточно четкое понимание конкурентной среды",
+    "Модель монетизации требует уточнения"
+  ],
+  "strengths": [
+    "Решает реальную проблему студентов",
+    "Низкий порог входа для пользователей"
+  ],
+  "recommendations": [
+    "Добавить анализ конкурентов",
+    "Уточнить стратегию привлечения пользователей"
+  ]
+}
+
+Now evaluate the idea (in RUSSIAN):
+
+{
+  "final_score": 0-10,
+  "verdict": "...",
+  "problems": [],
+  "strengths": [],
+  "recommendations": []
+}
+
+    
+    [SKILL]
+    # SKILL: Evaluate Startup Idea
+
+## Goal
+Evaluate idea quality objectively.
+
+## Criteria
+- problem clarity
+- market need
+- competition
+- feasibility
+- novelty
+
+## Output format
+
+{
+  "scores": {},
+  "final_score": 0,
+  "verdict": "",
+  "problems": []
+}
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Недостаточное качество образовательных ресурсов для студентов с осложнёнными психическими заболеваниями', 'solution': 'Платформа по созданию и обмену индивидуализированным обучающимиmaterialами с поддержкой ИИ, направленной на улучшение когнитивных способностей', 'target_audience': 'Студенты с осложнёнными психическими заболеваниями (14-25 лет)', 'value_proposition': 'Доступные, индивидуализированные обучающие материалы для улучшения когнитивных способностей и достижения образовательных целей', 'assumptions': ['Студенты хотят доступ к персонализированным ресурсам', 'Исходный материал требует значительных затрат на создание'], 'success_metrics': ['80% студентов сообщают о улучшении когнитивных способностей', '50% студентов зарегистрированы в платформе за первые 6 месяцев']}
+    
+
+=== RAW RESPONSE ===
+{
+  "final_score": 8.2,
+  "verdict": "Иdea перспективная, но требует доработки",
+  "problems": [
+    "Недостаточно четкое понимание конкурентной среды"
+  ],
+  "strengths": [
+    "Решает реальную проблему студентов",
+    "Низкий порог входа для пользователей"
+  ],
+  "recommendations": [
+    "Добавить анализ конкурентов",
+    "Уточнить стратегию привлечения пользователей"
+  ]
+}

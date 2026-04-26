@@ -1,9 +1,14 @@
 import os
 import logging
+import threading
 from typing import Any, Optional
 from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)
+
+# Singleton instance
+_langfuse_instance = None
+_langfuse_lock = threading.Lock()
 
 
 class FakeTrace:
@@ -17,6 +22,21 @@ class FakeTrace:
     def update(self, **kwargs):
         pass
     
+    def trace(self, name, **kwargs):
+        return self
+    
+    def span(self, name, **kwargs):
+        return FakeSpan()
+    
+    def generation(self, name, **kwargs):
+        return FakeSpan()
+    
+    def score(self, name, value, **kwargs):
+        pass
+    
+    def end(self):
+        pass
+    
     def __enter__(self):
         return self
     
@@ -28,6 +48,15 @@ class FakeSpan:
     """Заглушка для Langfuse span."""
     def update(self, **kwargs):
         pass
+    
+    def end(self, **kwargs):
+        pass
+    
+    def span(self, name, **kwargs):
+        return self
+    
+    def generation(self, name, **kwargs):
+        return self
     
     def __enter__(self):
         return self
@@ -59,12 +88,18 @@ class LangfuseClient:
             return FakeTrace()
         
         try:
-            trace = self.client.trace(
+            # Новый API langfuse 4.x: start_observation с trace_context
+            trace_id = self.client.create_trace_id()
+            trace = self.client.start_observation(
                 name=name,
+                trace_context={"trace_id": trace_id},
                 input=input,
                 output=output,
-                metadata=metadata or {}
+                metadata=metadata or {},
+                as_type="trace"
             )
+            # Сохраняем trace_id для последующих span
+            trace.trace_id = trace_id
             return trace
         except Exception as e:
             logger.warning(f"Langfuse trace failed: {e}")
@@ -76,16 +111,16 @@ class LangfuseClient:
             return FakeSpan()
         
         try:
-            # Если trace_id не передан, создаём заглушку
             if trace_id is None:
                 return FakeSpan()
             
-            span = self.client.span(
+            span = self.client.start_observation(
                 name=name,
+                trace_context={"trace_id": trace_id},
                 input=input,
                 output=output,
                 metadata=metadata or {},
-                trace_id=trace_id
+                as_type="span"
             )
             return span
         except Exception as e:
@@ -115,3 +150,13 @@ class LangfuseClient:
             output=output_data,
             metadata=meta or {}
         )
+
+
+def get_langfuse_client() -> LangfuseClient:
+    """Thread-safe singleton accessor."""
+    global _langfuse_instance
+    if _langfuse_instance is None:
+        with _langfuse_lock:
+            if _langfuse_instance is None:
+                _langfuse_instance = LangfuseClient()
+    return _langfuse_instance
