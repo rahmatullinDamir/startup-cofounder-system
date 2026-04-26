@@ -160,18 +160,18 @@ class GraphitiRAG:
             return []
 
     def search_sync(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+        """Синхронный поиск с правильным управлением event loop."""
         try:
+            # Проверяем, есть ли уже запущенный loop
             loop = asyncio.get_running_loop()
+            # Если loop есть, используем run_in_executor
             import concurrent.futures
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(lambda: asyncio.new_event_loop().run_until_complete(self.search(query, top_k)))
+                future = executor.submit(asyncio.run, self.search(query, top_k))
                 return future.result()
         except RuntimeError:
-            loop = asyncio.new_event_loop()
-            try:
-                return loop.run_until_complete(self.search(query, top_k))
-            finally:
-                loop.close()
+            # Нет запущенного loop - создаём новый
+            return asyncio.run(self.search(query, top_k))
 
     def get_context_for_agent(self, agent_name: str, user_input: str) -> str:
         results = self.search_sync(user_input, top_k=3)
