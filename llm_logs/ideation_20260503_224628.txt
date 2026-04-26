@@ -1,0 +1,99 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Ideation Agent
+
+You are a hypothesis generator.
+
+## Identity:
+You are a creative but structured ideation engine.
+
+## Responsibilities:
+- generate new startup hypotheses
+- ensure diversity of ideas
+- avoid repetition
+- incorporate past failures when provided
+
+## Forbidden:
+- evaluating ideas
+- market analysis
+- criticizing outputs
+
+## Principle:
+Maximize novelty while keeping structured output.
+    
+    [SYSTEM PROMPT]
+    You are Ideation Agent.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "problem": "Студенты испытывают трудности с поиском доступных стажировок",
+  "solution": "Платформа на базе ИИ для подбора микростажировок",
+  "target_audience": "Студенты университетов в возрасте 18-24 лет",
+  "value_proposition": "Доступ к оплачиваемым краткосрочным проектам без требований к резюме",
+  "assumptions": ["Студенты хотят гибкой работы", "Компаниям нужен дешёвый talent"],
+  "success_metrics": ["500 пользователей за 3 месяца", "80% уровень удовлетворённости"]
+}
+
+Now generate your response in the same JSON format (in RUSSIAN):
+
+{
+  "problem": "...",
+  "solution": "...",
+  "target_audience": "...",
+  "value_proposition": "...",
+  "assumptions": [],
+  "success_metrics": []
+}
+
+    
+    [SKILL]
+    # SKILL: Generate Startup Idea
+
+## Goal
+Generate a structured startup hypothesis.
+
+## Requirements
+- Must be realistic
+- Must not be generic
+- Must include clear problem
+
+## Output format (STRICT JSON)
+
+{
+  "problem": "",
+  "solution": "",
+  "target_audience": "",
+  "value_proposition": "",
+  "assumptions": [],
+  "success_metrics": []
+}
+
+    {
+    DYNAMIC PART
+    }
+
+    Придумай идею для стартапа в сфере образования
+    
+
+[BEST IDEAS (score >= 7)]
+[{'idea': "{'error': 'Invalid response: empty content', 'raw': 'Invalid response: empty content'}", 'score': 10}, {'idea': "{'problem': 'Traditional brewing techniques lack transparency and sustainability, while consumers demand traceability, ethical sourcing, and climate-friendly practices in craft beer production, yet small breweries often struggle to compete with large corporations on these fronts.', 'solution': 'A blockchain-powered platform called **BrewTrace** that connects farmers, breweries, and consumers through a transparent supply chain. It uses IoT sensors to track environmental impact (water use, CO₂ emissions), allows cryptographically verifiable sourcing records (grains, hops, yeast), and offers a loyalty program where customers earn carbon offset credits or exclusive brews from participating breweries.', 'target_audience': ['Ethical millennial consumers (25–35) who prioritize sustainability and traceability', 'Small craft breweries (50–500 employees) looking to differentiate through sustainability and authenticity', 'Local food cooperatives and urban farmers seeking higher-value partnerships'], 'value_proposition': ['For consumers: Real-time tracking of beer’s carbon footprint, verified sourcing, and exclusive rewards tied to sustainability contributions', 'For breweries: Access to premium suppliers, carbon-neutral production verification, and a built-in customer base through the platform’s marketplace', 'For farmers: Higher margins via direct sales to breweries through the platform’s supply chain network'], 'assumptions': ['Small breweries are willing to pay premiums (10–20%) for carbon-neutral certification', 'Urban consumers are willing to pay 5–15% more for sustainably brewed beer if they perceive tangible benefits', 'Blockchain adoption in agricultural supply chains is growing faster than it initially seemed'], 'success_metrics': ['200+ small breweries onboarded in Year 1 with verified sustainability metrics', '30% increase in customer engagement (loyalty program sign-ups) within 6 months', '100,000+ verified transactions via the platform within 18 months']}", 'score': 8.0}]
+
+Use the context above to generate a unique, improved idea.
+
+=== RAW RESPONSE ===
+{
+  "problem": "Недостаточная доступность и качество образовательных ресурсов для студентов с ограниченными возможностями на платформах онлайн-обучения",
+  "solution": "Платформа «Учителя» — интеллектуальная помощь для студентов с ограниченными возможностями, предоставляющая личный mentor, адаптированный учебный материал и доступ к экспертуным лекториям",
+  "target_audience": "Студенты с ограниченными возможностями (возраст 18-30 лет) в университетах",
+  "value_proposition": "Личная поддержка для студентов, улучшение качества образовательных ресурсов и доступ к экспертуammам",
+  "assumptions": ["Студенты с ограниченными возможностями хотят личной поддержки в обучении", "Университеты заинтересованы в предоставлении доступа для студентов с ограниченными возможностями", "Технологии могут помочь адаптировать образовательные ресурсы"],
+  "success_metrics": ["50% увеличение успеваемости студентов с ограниченными возможностями", "80% студентов hài themselves с личной поддержкой и доступом к экспертуammам", "1000+ студентов с ограниченными возможностями зарегистрированы на платформе за 6 месяцев"]
+}

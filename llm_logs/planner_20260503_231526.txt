@@ -1,0 +1,141 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Planner Agent
+
+You are a planning and structuring agent.
+
+## Identity:
+You transform validated ideas into execution plans.
+
+## Responsibilities:
+- decompose ideas into steps
+- define execution roadmap
+- structure phases logically
+
+## Forbidden:
+- evaluating ideas
+- changing hypothesis meaning
+
+## Principle:
+Only operate on accepted hypotheses.
+    
+    [SYSTEM PROMPT]
+    You are Planner Agent. Create a detailed implementation roadmap.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Исследование и валидация",
+      "duration": "2-4 недели",
+      "tasks": [
+        "Провести опрос среди целевой аудитории",
+        "Проанализировать конкурентов",
+        "Создать прототип MVP"
+      ]
+    },
+    {
+      "phase": "Фаза 2: Разработка MVP",
+      "duration": "4-8 недель",
+      "tasks": [
+        "Разработать backend API",
+        "Создать frontend интерфейс",
+        "Интегрировать ИИ-модель"
+      ]
+    },
+    {
+      "phase": "Фаза 3: Тестирование и запуск",
+      "duration": "2-3 недели",
+      "tasks": [
+        "Провести бета-тестирование",
+        "Собрать обратную связь",
+        "Запустить публичный релиз"
+      ]
+    }
+  ]
+}
+
+Now create the roadmap (in RUSSIAN):
+
+{
+  "roadmap": [
+    {
+      "phase": "...",
+      "duration": "...",
+      "tasks": []
+    }
+  ]
+}
+
+    
+    [SKILL]
+    # SKILL: Build Roadmap
+
+## Goal
+Transform idea into execution plan.
+
+## Output format
+
+{
+  "roadmap": [
+    {
+      "phase": "",
+      "tasks": [],
+      "duration": ""
+    }
+  ]
+}
+Now create a roadmap for the given idea. Return exactly 3-5 phases in the "roadmap" array. Each phase must have "phase", "tasks" (array of strings), and "duration" fields.
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Недостаточная доступность и качество образовательных ресурсов для студентов с ограниченными возможностями на платформах онлайн-обучения', 'solution': 'Платформа «Учителя» — интеллектуальная помощь для студентов с ограниченными возможностями, предоставляющая личный mentor, адаптированный учебный материал и доступ к экспертуаммам', 'target_audience': 'Студенты с ограниченными возможностями (возраст 18-30 лет) в университетах', 'value_proposition': 'Личная поддержка для студентов, улучшение качества образовательных ресурсов и доступ к экспертуаммам', 'assumptions': ['Студенты с ограниченными возможностями хотят личной поддержки в обучении', 'Университеты заинтересованы в предоставлении доступа для студентов с ограниченными возможностями', 'Технологии могут помочь адаптировать образовательные ресурсы'], 'success_metrics': ['50% увеличение успеваемости студентов с ограниченными возможностями', '80% студентов hài themselves с личной поддержкой и доступом к экспертуаммам', '1000+ студенты с ограниченными возможностями зарегистрированы на платформе за 6 месяцев']}
+    
+
+=== RAW RESPONSE ===
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Разработка платформы",
+      "tasks": [
+        "Применить стандартные протоколы безопасности и доступности",
+        "Разработать адаптированную интерфейсную систему для студентов с ограниченными возможностями"
+      ],
+      "duration": "4-8 недель"
+    },
+    {
+      "phase": "Фаза 2: Регистрация и настройка",
+      "tasks": [
+        "Направить информационный материал для студентов с ограниченными возможностями",
+        "Внедрить систему регистрации для студентов с ограниченными возможностями"
+      ],
+      "duration": "2-4 недели"
+    },
+    {
+      "phase": "Фаза 3: Пptest и интеграция",
+      "tasks": [
+        "Провести бета-тестирование платформы",
+        "Интегрировать платформу с существующим образовательным ресурсом"
+      ],
+      "duration": "2-3 недели"
+    },
+    {
+      "phase": "Фаза 4: Лаунч и продвижение",
+      "tasks": [
+        "Запустить публичный релиз платформы",
+        "Реализовать marketing-с estrategию для привлечения студентов с ограниченными возможностями"
+      ],
+      "duration": "4-8 недель"
+    }
+  ]
+}

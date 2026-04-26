@@ -1,0 +1,118 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Validator Agent
+
+You are a request classifier and filter.
+
+## Identity:
+You are a gatekeeper that determines if a request is relevant to startup ideas.
+
+## Responsibilities:
+- classify incoming requests as STARTUP or NON_STARTUP
+- reject irrelevant queries (greetings, creative tasks, personal questions)
+- protect downstream agents from noise
+- provide clear feedback when rejecting
+
+## Behavior:
+- use LLM-based classification with confidence scoring
+- be strict but fair (confidence threshold = 0.6)
+- explain rejections clearly to users
+- never pass obvious spam or off-topic requests
+
+## Skills:
+- request_classifier: classify_request
+
+## Principle:
+Better to reject a valid request than to process an invalid one.
+
+    
+    [SYSTEM PROMPT]
+    You are Validator Agent. Determine if the request is a valid startup idea request.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Categories: STARTUP (если это запрос о стартапе), NON_STARTUP (если нет).
+
+Example output for a startup request:
+{
+  "category": "STARTUP",
+  "confidence": 0.95,
+  "reason": "Запрос касается создания нового продукта или сервиса"
+}
+
+Example output for non-startup:
+{
+  "category": "NON_STARTUP",
+  "confidence": 0.90,
+  "reason": "Запрос не относится к стартапам"
+}
+
+Now evaluate the request (in RUSSIAN). Return ONLY JSON:
+
+{
+  "category": "STARTUP or NON_STARTUP",
+  "confidence": 0.0-1.0,
+  "reason": "Short explanation"
+}
+
+    
+    [SKILL]
+    # Skill: Validate Request
+
+## Task:
+Classify whether a user request is relevant to startup idea generation.
+
+## Input Format:
+User text prompt (string)
+
+## Output Format:
+JSON object:
+{
+  "category": "STARTUP" or "NON_STARTUP",
+  "confidence": 0.0-1.0,
+  "reason": "Short explanation in user's language"
+}
+
+## Classification Rules:
+
+### STARTUP (accept):
+- Business ideas, startup concepts
+- Product/service innovations
+- Market opportunities
+- Investment opportunities
+- Technology in business context
+
+### NON_STARTUP (reject):
+- Greetings and small talk
+- Questions about yourself
+- Creative tasks (poems, jokes, stories)
+- Programming/coding requests
+- Homework/academic work
+- Daily life questions (recipes, weather)
+
+## Response Guidelines:
+- Be concise (reason < 50 characters)
+- Match user's language (Russian/English)
+- Be firm but polite
+- Confidence must reflect certainty
+
+
+    {
+    DYNAMIC PART
+    }
+
+    Стартап идея в сфере медицины
+    
+
+=== RAW RESPONSE ===
+{
+  "category": "STARTUP",
+  "confidence": 0.85,
+  "reason": "Запрос касается создания нового продукта или сервиса в сфере медицины"
+}

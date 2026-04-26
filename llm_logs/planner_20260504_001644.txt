@@ -1,0 +1,141 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Planner Agent
+
+You are a planning and structuring agent.
+
+## Identity:
+You transform validated ideas into execution plans.
+
+## Responsibilities:
+- decompose ideas into steps
+- define execution roadmap
+- structure phases logically
+
+## Forbidden:
+- evaluating ideas
+- changing hypothesis meaning
+
+## Principle:
+Only operate on accepted hypotheses.
+    
+    [SYSTEM PROMPT]
+    You are Planner Agent. Create a detailed implementation roadmap.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Исследование и валидация",
+      "duration": "2-4 недели",
+      "tasks": [
+        "Провести опрос среди целевой аудитории",
+        "Проанализировать конкурентов",
+        "Создать прототип MVP"
+      ]
+    },
+    {
+      "phase": "Фаза 2: Разработка MVP",
+      "duration": "4-8 недель",
+      "tasks": [
+        "Разработать backend API",
+        "Создать frontend интерфейс",
+        "Интегрировать ИИ-модель"
+      ]
+    },
+    {
+      "phase": "Фаза 3: Тестирование и запуск",
+      "duration": "2-3 недели",
+      "tasks": [
+        "Провести бета-тестирование",
+        "Собрать обратную связь",
+        "Запустить публичный релиз"
+      ]
+    }
+  ]
+}
+
+Now create the roadmap (in RUSSIAN):
+
+{
+  "roadmap": [
+    {
+      "phase": "...",
+      "duration": "...",
+      "tasks": []
+    }
+  ]
+}
+
+    
+    [SKILL]
+    # SKILL: Build Roadmap
+
+## Goal
+Transform idea into execution plan.
+
+## Output format
+
+{
+  "roadmap": [
+    {
+      "phase": "",
+      "tasks": [],
+      "duration": ""
+    }
+  ]
+}
+Now create a roadmap for the given idea. Return exactly 3-5 phases in the "roadmap" array. Each phase must have "phase", "tasks" (array of strings), and "duration" fields.
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Недостаточное доступность к медицинским услугам для людей с ограниченными возможностями', 'solution': 'Портал поиска квалифицированных омбудсменов для пациентов с ограниченными возможностями', 'target_audience': 'Люди с ограниченными возможностями, живущие в городе', 'value_proposition': 'Упрощение поиска квалифицированных омбудсменов для пациентов с ограниченными возможностями', 'assumptions': ['Пациенты хотят более эффективного доступа к медицинским услугам', 'Медицинские учреждения нужны более эффективному поиску квалифицированных омбудсменов'], 'success_metrics': ['500 зарегистрированных пациентов за 6 месяцев', '80% уровеньatisfaction пациентов']}
+    
+
+=== RAW RESPONSE ===
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Исследование и валидация",
+      "tasks": [
+        "Анализировать потребности пациентов с ограниченными возможностями",
+        "Проанализировать существующие порталы поиска квалифицированных омбудсменов"
+      ],
+      "duration": "4-6 недель"
+    },
+    {
+      "phase": "Фаза 2: Разработка и тестирование",
+      "tasks": [
+        "Реализация портала поиска квалифицированных омbudсменов",
+        "Проведение внутреннего тестирования"
+      ],
+      "duration": "8-12 недель"
+    },
+    {
+      "phase": "Фаза 3: Публичный запуск и оценка",
+      "tasks": [
+        "Препарация портала для публичного запуска",
+        "Проведение бета-тестирования"
+      ],
+      "duration": "2-4 недели"
+    },
+    {
+      "phase": "Фаза 4: Оngoing support и улучшения",
+      "tasks": [
+        "Мониторинг использования портала",
+        "Обновление информации о квалифицированных омбудсменах"
+      ],
+      "duration": "неограничен"
+    }
+  ]
+}

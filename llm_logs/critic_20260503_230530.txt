@@ -1,0 +1,109 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Critic Agent
+
+You are a strict evaluation system.
+
+## Identity:
+You are a skeptical quality filter.
+
+## Responsibilities:
+- evaluate startup hypotheses
+- detect weaknesses and risks
+- block low-quality ideas
+
+## Behavior:
+- do NOT improve ideas
+- do NOT suggest alternatives
+- focus only on evaluation
+
+## Principle:
+If uncertain → reduce score.
+    
+    [SYSTEM PROMPT]
+    You are Critic Agent. Evaluate the startup idea critically.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "final_score": 7.5,
+  "verdict": "Идея перспективная, но требует доработки",
+  "problems": [
+    "Недостаточно четкое понимание конкурентной среды",
+    "Модель монетизации требует уточнения"
+  ],
+  "strengths": [
+    "Решает реальную проблему студентов",
+    "Низкий порог входа для пользователей"
+  ],
+  "recommendations": [
+    "Добавить анализ конкурентов",
+    "Уточнить стратегию привлечения пользователей"
+  ]
+}
+
+Now evaluate the idea (in RUSSIAN):
+
+{
+  "final_score": 0-10,
+  "verdict": "...",
+  "problems": [],
+  "strengths": [],
+  "recommendations": []
+}
+
+    
+    [SKILL]
+    # SKILL: Evaluate Startup Idea
+
+## Goal
+Evaluate idea quality objectively.
+
+## Criteria
+- problem clarity
+- market need
+- competition
+- feasibility
+- novelty
+
+## Output format
+
+{
+  "scores": {},
+  "final_score": 0,
+  "verdict": "",
+  "problems": []
+}
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Недостаточная доступность и качество образовательных ресурсов для студентов с ограниченными возможностями на платформах онлайн-обучения', 'solution': 'Платформа «Учителя» — интеллектуальная помощь для студентов с ограниченными возможностями, предоставляющая личный mentor, адаптированный учебный материал и доступ к экспертуammам', 'target_audience': 'Студенты с ограниченными возможностями (возраст 18-30 лет) в университетах', 'value_proposition': 'Личная поддержка для студентов, улучшение качества образовательных ресурсов и доступ к экспертуammам', 'assumptions': ['Студенты с ограниченными возможностями хотят личной поддержки в обучении', 'Университеты заинтересованы в предоставлении доступа для студентов с ограниченными возможностями', 'Технологии могут помочь адаптировать образовательные ресурсы'], 'success_metrics': ['50% увеличение успеваемости студентов с ограниченными возможностями', '80% студентов hài themselves с личной поддержкой и доступом к экспертуammам', '1000+ студенты с ограниченными возможностями зарегистрированы на платформе за 6 месяцев']}
+    
+
+=== RAW RESPONSE ===
+{
+    "final_score": 8.5,
+    "verdict": "Идея перспективна, но требует доработки",
+    "problems": [
+        "Недостаточно четкой формулировки стратегии привлечения и retaining студентов с ограниченными возможностями",
+        "Не claro, как будет реализована платформа «Учителя» и что это означает для студентов"
+    ],
+    "strengths": [
+        "Решает реальную проблему студентов с ограниченными возможностями",
+        "Напряжено на улучшение качества образовательных ресурсов и доступа к экспертуаммам"
+    ],
+    "recommendations": [
+        "Добавить анализ привлечения и retaining студентов с ограниченными возможностями",
+        "Объяснить, как будет реализована платформа «Учителя» и что это означает для студентов",
+        "Провести исследования по эффективности платформы «Учителя» в улучшении успеваемости и удовлетворенности студентов с ограниченными возможностями"
+    ]
+}

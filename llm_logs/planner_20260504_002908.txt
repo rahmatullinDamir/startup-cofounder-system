@@ -1,0 +1,144 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Planner Agent
+
+You are a planning and structuring agent.
+
+## Identity:
+You transform validated ideas into execution plans.
+
+## Responsibilities:
+- decompose ideas into steps
+- define execution roadmap
+- structure phases logically
+
+## Forbidden:
+- evaluating ideas
+- changing hypothesis meaning
+
+## Principle:
+Only operate on accepted hypotheses.
+    
+    [SYSTEM PROMPT]
+    You are Planner Agent. Create a detailed implementation roadmap.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+CRITICAL: Respond in RUSSIAN language. All text fields must be in Russian.
+
+Example output:
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Исследование и валидация",
+      "duration": "2-4 недели",
+      "tasks": [
+        "Провести опрос среди целевой аудитории",
+        "Проанализировать конкурентов",
+        "Создать прототип MVP"
+      ]
+    },
+    {
+      "phase": "Фаза 2: Разработка MVP",
+      "duration": "4-8 недель",
+      "tasks": [
+        "Разработать backend API",
+        "Создать frontend интерфейс",
+        "Интегрировать ИИ-модель"
+      ]
+    },
+    {
+      "phase": "Фаза 3: Тестирование и запуск",
+      "duration": "2-3 недели",
+      "tasks": [
+        "Провести бета-тестирование",
+        "Собрать обратную связь",
+        "Запустить публичный релиз"
+      ]
+    }
+  ]
+}
+
+Now create the roadmap (in RUSSIAN):
+
+{
+  "roadmap": [
+    {
+      "phase": "...",
+      "duration": "...",
+      "tasks": []
+    }
+  ]
+}
+
+    
+    [SKILL]
+    # SKILL: Build Roadmap
+
+## Goal
+Transform idea into execution plan.
+
+## Output format
+
+{
+  "roadmap": [
+    {
+      "phase": "",
+      "tasks": [],
+      "duration": ""
+    }
+  ]
+}
+Now create a roadmap for the given idea. Return exactly 3-5 phases in the "roadmap" array. Each phase must have "phase", "tasks" (array of strings), and "duration" fields.
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Недостаточное качество и доступность медицинских диагностических инструментов для студентов и newbie специалистов', 'solution': 'Интеллектуальная платформа для анализа medical-объектов с использованием AI иMachine Learning', 'target_audience': 'Студенты и newbie специалисты в сфере медицины', 'value_proposition': 'Доступ к высокопроизводящему и точному диагностическому инструменту без необходимости специальных знаний и опыта', 'assumptions': ['Недостаточное качество и доступность медицинских диагностических инструментов', 'Необходимость в эффективном и быстром анализе medical-объектов'], 'success_metrics': ['1000 пользователей за 6 месяцев', '85% уровень удовлетворённости']}
+    
+
+=== RAW RESPONSE ===
+{
+  "roadmap": [
+    {
+      "phase": "Фаза 1: Реализация интеллектуальной платформы",
+      "tasks": [
+        "Разработать основную структуру и интерфейс платформы",
+        "Интегрировать AI и Machine Learning технологии",
+        "Тестирование и.optimизация платформы"
+      ],
+      "duration": "8-12 недель"
+    },
+    {
+      "phase": "Фаза 2: Разработка и тестирование API",
+      "tasks": [
+        "Разработать и интегрировать backend API",
+        "Тестирование и оптимизация API",
+        "Сохранение и обновление данных"
+      ],
+      "duration": "4-6 недель"
+    },
+    {
+      "phase": "Фаза 3: Тестирование и запуск",
+      "tasks": [
+        "Проведение бета-тестирования",
+        "Собрать обратную связь",
+        "Запусkt публичный релиз"
+      ],
+      "duration": "2-3 недели"
+    },
+    {
+      "phase": "Фаза 4: Дополнительные функции и обновления",
+      "tasks": [
+        "Разработка дополнительных функций и моделей",
+        "Тестирование и оптимизация обновлений"
+      ],
+      "duration": "2-3 недели"
+    }
+  ]
+}
