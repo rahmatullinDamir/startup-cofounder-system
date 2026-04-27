@@ -118,25 +118,66 @@ class LLMClient:
             return {}
         
         text = text.strip()
+        
+        # Убираем возможные артефакты (например, /no_think)
+        text = re.sub(r"/\s*no_think\s*$", "", text, flags=re.IGNORECASE).strip()
 
         try:
             result = json.loads(text)
             if isinstance(result, str):
                 result = json.loads(result)
             return result
-        except:
+        except json.JSONDecodeError:
             pass
 
+        # Пытаемся найти JSON в тексте
         match = re.search(r"\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}", text, re.DOTALL)
         if match:
             json_str = match.group()
             try:
                 return json.loads(json_str)
-            except:
-                try:
-                    cleaned = json_str.replace('\"', '"').replace('\\\\', '\\')
-                    return json.loads(cleaned)
-                except:
-                    pass
+            except json.JSONDecodeError:
+                pass
 
-        return {"raw": text}
+            # Если не удалось, пробуем исправить неэкранированные переносы строк в строках
+            try:
+                # Заменяем реальные переносы строк внутри строк на \n
+                cleaned = re.sub(r'"([^"\\]*(\\.[^"\\]*)*)\n([^"\\]*(\\.[^"\\]*)*)"', 
+                                lambda m: m.group(0).replace('\n', '\\n'), json_str)
+                return json.loads(cleaned)
+            except json.JSONDecodeError:
+                pass
+
+            # Ещё одна попытка: нормализуем все переносы строк внутри JSON
+            try:
+                # Разбиваем на строки, убираем лишние переносы внутри строк
+                lines = json_str.split('\n')
+                normalized_lines = []
+                in_string = False
+                current_line = ""
+                
+                for line in lines:
+                    if not in_string:
+                        current_line = line
+                    else:
+                        current_line += " " + line.strip()
+                    
+                    # Считаем кавычки, чтобы определить, внутри строки мы или нет
+                    quote_count = current_line.count('"') - current_line.count('\\"')
+                    in_string = (quote_count % 2) == 1
+                    normalized_lines.append(current_line)
+                    
+                    if not in_string:
+                        normalized_lines.append("\n")
+                
+                normalized = "".join(normalized_lines).strip()
+                # Убираем лишние переносы строк между элементами JSON
+                normalized = re.sub(r'\}\s*\n\s*\{', '}\n{', normalized)
+                normalized = re.sub(r'\[\s*\n\s*', '[', normalized)
+                normalized = re.sub(r'\s*\n\s*\]', ']', normalized)
+                
+                return json.loads(normalized)
+            except json.JSONDecodeError:
+                pass
+
+        return {"raw": text, "error": "Failed to parse JSON"}

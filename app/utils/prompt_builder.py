@@ -32,19 +32,23 @@ def build_prompt(agent_name, skill_path, dynamic_input):
     else:
         skill = load_file(skill_path)
 
-    prompt = f"""
+    f"""
+    {{
+    STATIC (CACHED PART)
+    }}
 
-[SYSTEM IDENTITY]
-{soul}
+    [SYSTEM IDENTITY]
+    {soul}
+    
+    [SKILL]
+    {skill}
 
-[OPERATING RULES]
-{system}
+    {{
+    DYNAMIC PART
+    }}
 
-[SKILL]
-{skill}
-
-{dynamic_input}
-"""
+    {dynamic_input}
+    """
 
     logger.info(f"Built prompt for {agent_name} ({len(prompt)} chars)")
     logger.debug(f"Prompt preview:\n{prompt[:500]}...")
