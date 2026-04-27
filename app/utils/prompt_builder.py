@@ -1,5 +1,8 @@
 import os
+import logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SOULS_DIR = BASE_DIR / "souls"
@@ -48,4 +51,7 @@ STATIC (CACHED PART)
 {dynamic_input}
 """
 
+    logger.info(f"📝 Built prompt for {agent_name} ({len(prompt)} chars)")
+    logger.debug(f"Prompt preview:\n{prompt[:500]}...")
+    
     return prompt

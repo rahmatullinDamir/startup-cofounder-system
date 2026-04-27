@@ -82,10 +82,14 @@ services:
     environment:
       - OLLAMA_HOST=http://ollama:11434
       - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_PASSWORD=password
+      - NEO4J_USER=neo4j
       - LANGFUSE_HOST=http://langfuse:3000
-      - LANGFUSE_SECRET_KEY=xxx
-      - LANGFUSE_PUBLIC_KEY=xxx
+      - LANGFUSE_SECRET_KEY=sk-langfuse-secret-key
+      - LANGFUSE_PUBLIC_KEY=pk-langfuse-public-key
       - LLM_URL=http://ollama:11434/api/generate
+      - LLM_MODEL=qwen3.5:2b
+      - LOG_LEVEL=INFO
 
     depends_on:
       ollama:

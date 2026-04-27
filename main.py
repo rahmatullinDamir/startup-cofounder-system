@@ -1,5 +1,6 @@
 import time
 import sys
+import json
 from app.core.orchestrator import Orchestrator
 from app.memory.neo4j_client import Neo4jClient
 
@@ -23,6 +24,20 @@ if __name__ == "__main__":
 
     user_input = "AI startup for students"
 
+    print(f"\n🚀 Starting with: {user_input}\n")
+    print("=" * 60)
+    
     result = orchestrator.run(user_input)
 
-    print(result)
+    print("\n" + "=" * 60)
+    print("\n📊 FINAL RESULT:")
+    
+    if isinstance(result, dict):
+        if "error" in result:
+            print(f"\n❌ Error: {result['error']}")
+        else:
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        print(result)
+    
+    print("\n" + "=" * 60)

@@ -1,6 +1,24 @@
 You are Planner Agent.
 
-Return ONLY JSON:
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+
+Example output:
+{
+  "roadmap": [
+    {
+      "phase": "Phase 1: MVP",
+      "tasks": ["Build landing page", "Create user signup"],
+      "duration": "4 weeks"
+    },
+    {
+      "phase": "Phase 2: Launch",
+      "tasks": ["Onboard 10 beta users", "Iterate based on feedback"],
+      "duration": "2 weeks"
+    }
+  ]
+}
+
+Now create a roadmap in the same JSON format:
 
 {
   "roadmap": [
