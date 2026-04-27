@@ -26,9 +26,8 @@ class LLMClient:
             raw = self._invoke(prompt)
             parsed = self._parse(raw)
 
-            # Валидация: проверяем, что ответ не пустой и содержит JSON
             if not self._validate_response(parsed, raw):
-                raise ValueError(f"Invalid response: empty or non-JSON content")
+                raise ValueError(f"Invalid response: empty content")
 
             trace.start_observation(
                 name="llm_call",
@@ -56,23 +55,12 @@ class LLMClient:
             return {"error": str(e), "raw": str(e)}
 
     def _validate_response(self, parsed, raw):
-        """Проверяет, что ответ содержит валидный JSON с ключевыми полями."""
         if not raw or len(raw.strip()) == 0:
             logger.error("❌ Empty response from LLM")
             return False
-        
         if isinstance(parsed, dict) and "error" in parsed:
             logger.error(f"❌ Response contains error: {parsed.get('error')}")
             return False
-        
-        # Проверяем наличие хотя бы одного ключа (не только "raw")
-        if isinstance(parsed, dict) and len(parsed) > 0 and "raw" not in parsed:
-            return True
-        
-        if isinstance(parsed, dict) and "raw" in parsed and len(parsed) == 1:
-            logger.error("❌ Response is raw text, not valid JSON")
-            return False
-        
         return True
 
     def _invoke(self, prompt, retries=3):
@@ -81,7 +69,6 @@ class LLMClient:
         for i in range(retries):
             try:
                 logger.info(f"📤 LLM request attempt {i+1}/{retries} to {self.url} with model {self.model}")
-                logger.debug(f"Prompt preview: {prompt[:300]}...")
                 
                 r = requests.post(
                     self.url,
@@ -89,11 +76,7 @@ class LLMClient:
                         "model": self.model,
                         "prompt": prompt,
                         "stream": False,
-                        "options": {
-                            "num_predict": 512,
-                            "temperature": 0.7,
-                            "top_p": 0.9
-                        }
+                        "options": {"num_predict": 512, "temperature": 0.7, "top_p": 0.9}
                     },
                     timeout=300
                 )
@@ -101,13 +84,11 @@ class LLMClient:
                 logger.info(f"📥 Response status: {r.status_code}")
 
                 if r.status_code != 200:
-                    logger.error(f"❌ HTTP error: {r.status_code} - {r.text[:500]}")
                     raise Exception(f"HTTP {r.status_code}: {r.text[:200]}")
 
                 data = r.json()
 
                 if "response" not in data:
-                    logger.error(f"❌ Invalid response format: {data}")
                     raise Exception(f"Invalid response format: {data}")
 
                 response_text = data["response"]
@@ -130,36 +111,32 @@ class LLMClient:
                 last_error = e
                 time.sleep(i + 1)
 
-        logger.error(f"❌ LLM failed after {retries} retries: {last_error}")
         raise Exception(f"LLM failed after {retries} retries: {last_error}")
 
     def _parse(self, text):
-        """Пытается распарсить JSON из ответа."""
         if not text or len(text.strip()) == 0:
             return {}
         
         text = text.strip()
-        
-        # Прямой парсинг
+
         try:
             result = json.loads(text)
-            logger.debug("✅ Direct JSON parse successful")
+            if isinstance(result, str):
+                result = json.loads(result)
             return result
-        except json.JSONDecodeError as e:
-            logger.debug(f"Direct parse failed: {e}")
+        except:
             pass
 
-        # Поиск JSON в тексте
-        match = re.search(r"\{.*\}", text, re.DOTALL)
-
+        match = re.search(r"\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}", text, re.DOTALL)
         if match:
+            json_str = match.group()
             try:
-                result = json.loads(match.group())
-                logger.debug("✅ JSON extracted from text")
-                return result
-            except json.JSONDecodeError as e:
-                logger.debug(f"Extracted JSON parse failed: {e}")
-                pass
+                return json.loads(json_str)
+            except:
+                try:
+                    cleaned = json_str.replace('\"', '"').replace('\\\\', '\\')
+                    return json.loads(cleaned)
+                except:
+                    pass
 
-        logger.warning("⚠️ Could not parse JSON, returning raw text")
         return {"raw": text}

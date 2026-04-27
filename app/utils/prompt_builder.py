@@ -33,9 +33,6 @@ def build_prompt(agent_name, skill_path, dynamic_input):
         skill = load_file(skill_path)
 
     prompt = f"""
-{{
-STATIC (CACHED PART)
-}}
 
 [SYSTEM IDENTITY]
 {soul}
@@ -45,8 +42,6 @@ STATIC (CACHED PART)
 
 [SKILL]
 {skill}
-
-{{DYNAMIC PART}}
 
 {dynamic_input}
 """
