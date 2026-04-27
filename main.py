@@ -49,9 +49,9 @@ def print_formatted_result(result):
                 problems = critique['problems']
                 if isinstance(problems, list) and problems:
                     print("Areas for Improvement:")
-                    for i, p in enumerate(problems[:3], 1):
+                    for i, p in enumerate(problems, 1):
                         p_clean = re.sub(r'\*\*|\*|`', '', str(p))
-                        print(f"  {i}. {p_clean[:100]}{'...' if len(p) > 100 else ''}")
+                        print(f"  {i}. {p_clean}")
         else:
             print(critique)
 
