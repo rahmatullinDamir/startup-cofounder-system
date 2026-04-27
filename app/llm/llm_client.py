@@ -42,11 +42,11 @@ class LLMClient:
                 **(metadata or {})
             })
 
-            logger.info(f"✅ Valid response received ({len(raw)} chars)")
+            logger.info(f"Valid response received ({len(raw)} chars)")
             return parsed
 
         except Exception as e:
-            logger.error(f"❌ LLM error: {e}")
+            logger.error(f"LLM error: {e}")
             trace.update(metadata={
                 "status": "error",
                 "error": str(e),
@@ -56,10 +56,10 @@ class LLMClient:
 
     def _validate_response(self, parsed, raw):
         if not raw or len(raw.strip()) == 0:
-            logger.error("❌ Empty response from LLM")
+            logger.error("Empty response from LLM")
             return False
         if isinstance(parsed, dict) and "error" in parsed:
-            logger.error(f"❌ Response contains error: {parsed.get('error')}")
+            logger.error(f"Response contains error: {parsed.get('error')}")
             return False
         return True
 
@@ -68,7 +68,7 @@ class LLMClient:
 
         for i in range(retries):
             try:
-                logger.info(f"📤 LLM request attempt {i+1}/{retries} to {self.url} with model {self.model}")
+                logger.info(f"LLM request attempt {i+1}/{retries} to {self.url} with model {self.model}")
                 
                 r = requests.post(
                     self.url,
@@ -81,7 +81,7 @@ class LLMClient:
                     timeout=300
                 )
 
-                logger.info(f"📥 Response status: {r.status_code}")
+                logger.info(f"Response status: {r.status_code}")
 
                 if r.status_code != 200:
                     raise Exception(f"HTTP {r.status_code}: {r.text[:200]}")
@@ -92,10 +92,10 @@ class LLMClient:
                     raise Exception(f"Invalid response format: {data}")
 
                 response_text = data["response"]
-                logger.info(f"📝 Raw response length: {len(response_text)} chars")
+                logger.info(f"Raw response length: {len(response_text)} chars")
                 
                 if len(response_text.strip()) == 0:
-                    logger.warning("⚠️ Empty response, retrying...")
+                    logger.warning("Empty response, retrying...")
                     last_error = ValueError("Empty response")
                     time.sleep(i + 1)
                     continue
@@ -103,11 +103,11 @@ class LLMClient:
                 return response_text
 
             except requests.exceptions.Timeout:
-                logger.error(f"⏱️ Timeout on attempt {i+1}")
+                logger.error(f"Timeout on attempt {i+1}")
                 last_error = TimeoutError("Request timed out")
                 time.sleep(i + 1)
             except Exception as e:
-                logger.error(f"⚠️ Error on attempt {i+1}: {e}")
+                logger.error(f"Error on attempt {i+1}: {e}")
                 last_error = e
                 time.sleep(i + 1)
 

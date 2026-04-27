@@ -1,12 +1,10 @@
-import os
 from app.llm.llm_client import LLMClient
 from app.utils.prompt_builder import build_prompt
 
 llm = LLMClient()
-agent_name = os.getenv("AGENT_NAME", "planner")
 
 
-def run_planner(prompt, skill="planner/build_roadmap.md", agent_name=agent_name):
+def run_planner(prompt, skill="planner/build_roadmap.md", agent_name="planner"):
     full_prompt = build_prompt(agent_name, skill, prompt)
 
     return llm.generate(

@@ -46,7 +46,7 @@ def build_prompt(agent_name, skill_path, dynamic_input):
 {dynamic_input}
 """
 
-    logger.info(f"📝 Built prompt for {agent_name} ({len(prompt)} chars)")
+    logger.info(f"Built prompt for {agent_name} ({len(prompt)} chars)")
     logger.debug(f"Prompt preview:\n{prompt[:500]}...")
     
     return prompt

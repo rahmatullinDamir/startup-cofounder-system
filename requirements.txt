@@ -2,3 +2,4 @@ requests
 neo4j
 langfuse
 pydantic
+python-dotenv
