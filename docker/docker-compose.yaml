@@ -5,11 +5,20 @@ services:
   # -------------------------
   ollama:
     image: ollama/ollama
+    deploy:
+      resources:
+        limits:
+           memory: 6G
+
     container_name: ollama
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_LOAD_TIMEOUT=10m
+      - OLLAMA_NUM_PARALLEL=1
+      - OLLAMA_MAX_LOADED_MODELS=1
 
   # -------------------------
   # GRAPH MEMORY (Neo4j)
@@ -24,33 +33,28 @@ services:
       - NEO4J_AUTH=neo4j/password
     volumes:
       - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 7687 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # -------------------------
   # LANGFUSE (observability)
   # -------------------------
   langfuse:
-    image: langfuse/langfuse:latest
+    image: langfuse/langfuse:2
     container_name: langfuse
     ports:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@langfuse-db:5432/langfuse
       - NEXTAUTH_SECRET=secret
+      - NEXTAUTH_URL=http://localhost:3000
       - SALT=secret
-      - CLICKHOUSE_URL=http://clickhouse:8123/langfuse
     depends_on:
       - langfuse-db
-      - clickhouse
-
-  clickhouse:
-    image: clickhouse/clickhouse-server:latest
-    container_name: langfuse-clickhouse
-    environment:
-      - CLICKHOUSE_DB=langfuse
-      - CLICKHOUSE_USER=langfuse
-      - CLICKHOUSE_PASSWORD=langfuse
-    volumes:
-      - clickhouse_data:/var/lib/clickhouse
 
   langfuse-db:
     image: postgres:15
@@ -83,12 +87,14 @@ services:
       - LLM_URL=http://ollama:11434/api/generate
 
     depends_on:
-      - ollama
-      - neo4j
-      - langfuse
+      ollama:
+        condition: service_started
+      neo4j:
+        condition: service_started
+      langfuse:
+        condition: service_started
 
 volumes:
   ollama_data:
   neo4j_data:
   langfuse_db:
-  clickhouse_data:
