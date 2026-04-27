@@ -19,6 +19,7 @@ services:
       - OLLAMA_LOAD_TIMEOUT=10m
       - OLLAMA_NUM_PARALLEL=1
       - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_KEEP_ALIVE=60m
 
   # -------------------------
   # GRAPH MEMORY (Neo4j)
