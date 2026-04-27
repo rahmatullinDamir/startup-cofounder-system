@@ -29,7 +29,7 @@ class Orchestrator:
     # ---------------- IDEATION ----------------
 
     def ideation_node(self, input_data):
-        trace = self.langfuse.client.trace(name="orchestrator.ideation", input=input_data)
+        trace = self.langfuse.create_trace(name="orchestrator.ideation", input=input_data)
 
         try:
             idea = run_ideation(input_data)
@@ -53,7 +53,7 @@ class Orchestrator:
     # ---------------- CRITIC + SELF HEALING ----------------
 
     def critic_node(self, payload):
-        trace = self.langfuse.client.trace(
+        trace = self.langfuse.create_trace(
             name="orchestrator.critic",
             input=payload,
             metadata={"fail_count": self.failure_detector.fail_count}
@@ -108,7 +108,7 @@ class Orchestrator:
     # ---------------- PLANNER ----------------
 
     def planner_node(self, payload):
-        trace = self.langfuse.client.trace(name="orchestrator.planner", input=payload)
+        trace = self.langfuse.create_trace(name="orchestrator.planner", input=payload)
 
         try:
             plan = run_planner(payload["idea"])
@@ -131,7 +131,7 @@ class Orchestrator:
             raise
 
     def run(self, user_input):
-        trace = self.langfuse.client.trace(name="orchestrator.run", input=user_input)
+        trace = self.langfuse.create_trace(name="orchestrator.run", input=user_input)
 
         try:
             result = self.bus.emit("START", user_input)

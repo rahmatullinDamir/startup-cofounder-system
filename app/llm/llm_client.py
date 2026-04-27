@@ -9,12 +9,12 @@ from app.observability.langfuse_client import LangfuseClient
 class LLMClient:
 
     def __init__(self):
-        self.model = os.getenv("LLM_MODEL", "qwen:4b")
+        self.model = os.getenv("LLM_MODEL", "qwen3.5:2b")
         self.url = os.getenv("LLM_URL", "http://host.docker.internal:11434/api/generate")
         self.langfuse = LangfuseClient()
 
     def generate(self, prompt, agent_name="agent", metadata=None):
-        trace = self.langfuse.client.trace(name=agent_name)
+        trace = self.langfuse.create_trace(name=agent_name)
 
         start = time.time()
 
@@ -22,7 +22,7 @@ class LLMClient:
             raw = self._invoke(prompt)
             parsed = self._parse(raw)
 
-            trace.span(
+            trace.start_observation(
                 name="llm_call",
                 input={"prompt": prompt[:2000]},
                 output={"response": raw[:2000]}
@@ -57,7 +57,7 @@ class LLMClient:
                         "prompt": prompt,
                         "stream": False
                     },
-                    timeout=60
+                    timeout=180
                 )
 
                 if r.status_code != 200:

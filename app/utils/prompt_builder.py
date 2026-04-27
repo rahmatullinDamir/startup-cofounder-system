@@ -2,13 +2,21 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+SOULS_DIR = BASE_DIR / "souls"
+PROMPTS_DIR = BASE_DIR / "prompts"
+SKILLS_DIR = BASE_DIR / "skills"
 
 
 def load_file(path):
-    if not os.path.isabs(path):
-        path = BASE_DIR / "prompts" / path
+    # Файлы .SOUL.md лежат в souls/, остальные в prompts/
+    if path.endswith(".SOUL.md"):
+        full_path = SOULS_DIR / path
+    elif not os.path.isabs(path):
+        full_path = PROMPTS_DIR / path
+    else:
+        full_path = path
     
-    with open(path, "r") as f:
+    with open(full_path, "r") as f:
         return f.read()
 
 

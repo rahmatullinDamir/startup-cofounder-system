@@ -13,14 +13,14 @@ class MemoryService:
     def store_idea(self, idea):
         result = self.db.query("""
             CREATE (i:Idea {content: $idea})
-            RETURN id(i) as id
+            RETURN elementId(i) as id
         """, {"idea": str(idea)})
 
         return result[0]["id"]
 
     def store_evaluation(self, idea_id, evaluation):
         self.db.query("""
-            MATCH (i:Idea) WHERE id(i) = $id
+            MATCH (i:Idea) WHERE elementId(i) = $id
             CREATE (e:Evaluation {content: $eval, score: $score})
             CREATE (i)-[:HAS_EVAL]->(e)
         """, {
@@ -31,7 +31,7 @@ class MemoryService:
 
     def store_plan(self, idea_id, plan):
         self.db.query("""
-            MATCH (i:Idea) WHERE id(i) = $id
+            MATCH (i:Idea) WHERE elementId(i) = $id
             CREATE (p:Plan {content: $plan})
             CREATE (i)-[:HAS_PLAN]->(p)
         """, {
@@ -42,7 +42,7 @@ class MemoryService:
     def link_iteration(self, old_id, new_id, reason):
         self.db.query("""
             MATCH (a:Idea), (b:Idea)
-            WHERE id(a) = $old AND id(b) = $new
+            WHERE elementId(a) = $old AND elementId(b) = $new
             CREATE (a)-[:ITERATED_TO {reason: $reason}]->(b)
         """, {
             "old": old_id,
@@ -52,7 +52,7 @@ class MemoryService:
 
     def store_failure(self, idea_id, reason):
         self.db.query("""
-            MATCH (i:Idea) WHERE id(i) = $id
+            MATCH (i:Idea) WHERE elementId(i) = $id
             CREATE (f:Failure {reason: $reason})
             CREATE (i)-[:FAILED]->(f)
         """, {

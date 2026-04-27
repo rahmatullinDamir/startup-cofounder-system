@@ -13,8 +13,17 @@ class Neo4jClient:
         
         self.driver = GraphDatabase.driver(self.uri, auth=(self.user, self.password))
 
+    def check_connection(self):
+        """Проверка подключения к Neo4j."""
+        try:
+            with self.driver.session() as session:
+                session.run("RETURN 1")
+            return True
+        except Exception:
+            return False
+
     def query(self, cypher, params=None):
-        trace = self.langfuse.client.trace(name="neo4j_query")
+        trace = self.langfuse.create_trace(name="neo4j_query")
         
         try:
             with self.driver.session() as session:
