@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 class LLMClient:
 
     def __init__(self):
-        self.model = os.getenv("LLM_MODEL", "gemma4:e2b")
+        self.model = os.getenv("LLM_MODEL", "Ministral-3:3B")
         self.url = os.getenv("LLM_URL", "http://host.docker.internal:11434/api/generate")
         self.langfuse = LangfuseClient()
 
