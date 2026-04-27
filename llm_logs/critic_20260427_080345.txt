@@ -1,0 +1,109 @@
+=== PROMPT ===
+
+    {
+    STATIC (CACHED PART)
+    }
+
+    [SYSTEM IDENTITY]
+    # SOUL: Critic Agent
+
+You are a strict evaluation system.
+
+## Identity:
+You are a skeptical quality filter.
+
+## Responsibilities:
+- evaluate startup hypotheses
+- detect weaknesses and risks
+- block low-quality ideas
+
+## Behavior:
+- do NOT improve ideas
+- do NOT suggest alternatives
+- focus only on evaluation
+
+## Principle:
+If uncertain в†’ reduce score.
+    
+    [SYSTEM PROMPT]
+    You are Critic Agent.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanations, no extra text.
+
+Example output:
+{
+  "scores": {
+    "problem_clarity": 7,
+    "market_need": 8,
+    "competition": 5,
+    "feasibility": 9,
+    "novelty": 6
+  },
+  "final_score": 7.0,
+  "verdict": "accept",
+  "problems": ["High competition from existing platforms"]
+}
+
+Now evaluate the idea and return JSON:
+
+{
+  "scores": {
+    "problem_clarity": 0,
+    "market_need": 0,
+    "competition": 0,
+    "feasibility": 0,
+    "novelty": 0
+  },
+  "final_score": 0,
+  "verdict": "accept",
+  "problems": []
+}
+    
+    [SKILL]
+    # SKILL: Evaluate Startup Idea
+
+## Goal
+Evaluate idea quality objectively.
+
+## Criteria
+- problem clarity
+- market need
+- competition
+- feasibility
+- novelty
+
+## Output format
+
+{
+  "scores": {},
+  "final_score": 0,
+  "verdict": "",
+  "problems": []
+}
+
+    {
+    DYNAMIC PART
+    }
+
+    {'problem': 'Traditional hockey training programs lack personalized, data-driven feedback for players at all skill levels, particularly for youth and amateur leagues where progress stalls due to inconsistent coaching and lack of analytics tools.', 'solution': 'A SaaS platform integrating AI-driven motion capture, game analytics, and micro-drills for personalized training recommendations across skill levels, coupled with a community feature for players to compare progress and share drills.', 'target_audience': {'primary': 'Amateur and semi-professional hockey players aged 10–35 (including youth leagues and high-performance training groups)', 'secondary': 'Coaches and trainers in local hockey associations who seek structured development tools'}, 'value_proposition': {'for_players': 'Customized training plans with real-time feedback on technique, endurance, and strategy, reducing plateaus through adaptive difficulty levels.', 'for_coaches': 'Standardized training metrics and visualization dashboards to improve recruitment and team performance.', 'for_communities': 'Collaborative space to share drills, compete in virtual challenges, and track collective progress.'}, 'assumptions': ['Players and coaches will prioritize efficiency over cost in training tools.', 'Hockey associations and clubs will adopt digital solutions for long-term growth.', 'Mobile devices and wearable tech (e.g., smart jerseys) are becoming standard in amateur sports.', 'Local hockey leagues will increasingly integrate technology for compliance and innovation.'], 'success_metrics': ['30% user growth in 12 months among amateur players', '40% increase in coach adoption within hockey associations', '50% reduction in training time through AI-driven efficiency', 'Community engagement metrics: 500+ active players sharing content monthly']}
+    
+
+=== RAW RESPONSE ===
+```json
+{
+  "scores": {
+    "problem_clarity": 9,
+    "market_need": 8,
+    "competition": 5,
+    "feasibility": 7,
+    "novelty": 8
+  },
+  "final_score": 7.14,
+  "verdict": "borderline-accept (with conditions)",
+  "problems": [
+    "High competition exists from existing hockey analytics/drill platforms (e.g., Hudl, Hudl Next Gen, Wiffle Hockey), though AI-driven personalization could differentiate the offering. Risk of commoditization if core value proposition (e.g., youth-specific micro-drills) isn’t uniquely compelling.",
+    "Assumption 3 (wearable tech adoption) is strong but requires validation: Smart jerseys are niche in amateur leagues—would need partnerships with brands/clubs to ensure adoption. Assumption 4 (league tech integration) is aspirational; many small associations lack budgets or infrastructure.",
+    "No clear path for monetization defined—would need to address SaaS pricing tiers (e.g., player tiers vs. coach/admin), potential revenue streams (e.g., premium analytics, sponsorships), or subscription models. Risk of undercutting existing platforms on cost."
+  ]
+}
+```

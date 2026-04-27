@@ -32,13 +32,16 @@ def build_prompt(agent_name, skill_path, dynamic_input):
     else:
         skill = load_file(skill_path)
 
-    f"""
+    prompt = f"""
     {{
     STATIC (CACHED PART)
     }}
 
     [SYSTEM IDENTITY]
     {soul}
+    
+    [SYSTEM PROMPT]
+    {system}
     
     [SKILL]
     {skill}
