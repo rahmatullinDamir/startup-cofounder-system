@@ -4,6 +4,7 @@ import time
 import re
 import os
 import logging
+from pathlib import Path
 from app.observability.langfuse_client import LangfuseClient
 
 logger = logging.getLogger(__name__)
@@ -13,9 +14,15 @@ logging.basicConfig(level=logging.INFO)
 class LLMClient:
 
     def __init__(self):
-        self.model = os.getenv("LLM_MODEL", "Ministral-3:3B")
+        self.model = os.getenv("LLM_MODEL", "qwen3.5:2b")
         self.url = os.getenv("LLM_URL", "http://host.docker.internal:11434/api/generate")
         self.langfuse = LangfuseClient()
+        self._ensure_log_dir()
+
+    def _ensure_log_dir(self):
+        """Создаёт директорию для логов, если её нет."""
+        self.log_dir = Path(__file__).parent.parent.parent / "llm_logs"
+        self.log_dir.mkdir(exist_ok=True)
 
     def generate(self, prompt, agent_name="agent", metadata=None):
         trace = self.langfuse.create_trace(name=agent_name)
@@ -24,6 +31,10 @@ class LLMClient:
 
         try:
             raw = self._invoke(prompt)
+            
+            # Логируем сырой ответ в файл для отладки
+            self._log_raw_response(agent_name, prompt, raw)
+            
             parsed = self._parse(raw)
 
             if not self._validate_response(parsed, raw):
@@ -119,8 +130,14 @@ class LLMClient:
         
         text = text.strip()
         
-        # Убираем возможные артефакты (например, /no_think)
-        text = re.sub(r"/\s*no_think\s*$", "", text, flags=re.IGNORECASE).strip()
+        # Убираем возможные артефакты (/no_think, , </think> и т.п.)
+        text = re.sub(r"^/\s*no_think\s*\n?", "", text, flags=re.IGNORECASE).strip()
+        text = re.sub(r"^\s*\s*", "", text, flags=re.IGNORECASE | re.DOTALL).strip()
+        text = re.sub(r"^\s*</think>\s*", "", text, flags=re.IGNORECASE).strip()
+        
+        # Ищем JSON в тексте (убираем markdown-обёртки)
+        text = re.sub(r"^```json\s*", "", text).strip()
+        text = re.sub(r"```$", "", text, flags=re.IGNORECASE).strip()
 
         try:
             result = json.loads(text)
@@ -139,45 +156,44 @@ class LLMClient:
             except json.JSONDecodeError:
                 pass
 
-            # Если не удалось, пробуем исправить неэкранированные переносы строк в строках
+            # Попытка исправить неэкранированные переносы строк в строках JSON
             try:
-                # Заменяем реальные переносы строк внутри строк на \n
-                cleaned = re.sub(r'"([^"\\]*(\\.[^"\\]*)*)\n([^"\\]*(\\.[^"\\]*)*)"', 
-                                lambda m: m.group(0).replace('\n', '\\n'), json_str)
-                return json.loads(cleaned)
-            except json.JSONDecodeError:
+                # Находим все строки JSON с неэкранированными переносами
+                def fix_newlines_in_strings(m):
+                    s = m.group(0)
+                    # Заменяем реальные \n внутри кавычек на экранированные
+                    return s.replace('\n', '\\n').replace('\r', '\\r')
+                
+                # Паттерн для строки JSON с возможными переносами
+                fixed = re.sub(r'"(?:[^"\\]|\\.)*\n(?:[^"\\]|\\.)*"', fix_newlines_in_strings, json_str)
+                return json.loads(fixed)
+            except json.JSONDecodeError as e:
+                logger.debug(f"First fix failed: {e}")
                 pass
 
-            # Ещё одна попытка: нормализуем все переносы строк внутри JSON
+            # Вторая попытка: нормализуем переносы строк в массивах
             try:
-                # Разбиваем на строки, убираем лишние переносы внутри строк
-                lines = json_str.split('\n')
-                normalized_lines = []
-                in_string = False
-                current_line = ""
-                
-                for line in lines:
-                    if not in_string:
-                        current_line = line
-                    else:
-                        current_line += " " + line.strip()
-                    
-                    # Считаем кавычки, чтобы определить, внутри строки мы или нет
-                    quote_count = current_line.count('"') - current_line.count('\\"')
-                    in_string = (quote_count % 2) == 1
-                    normalized_lines.append(current_line)
-                    
-                    if not in_string:
-                        normalized_lines.append("\n")
-                
-                normalized = "".join(normalized_lines).strip()
-                # Убираем лишние переносы строк между элементами JSON
-                normalized = re.sub(r'\}\s*\n\s*\{', '}\n{', normalized)
-                normalized = re.sub(r'\[\s*\n\s*', '[', normalized)
-                normalized = re.sub(r'\s*\n\s*\]', ']', normalized)
-                
-                return json.loads(normalized)
-            except json.JSONDecodeError:
+                # Заменяем переносы строк после запятых в массивах
+                fixed = re.sub(r',\s*\n\s*', ', ', json_str)
+                fixed = re.sub(r':\s*\n\s*', ': ', fixed)
+                fixed = re.sub(r'\[\s*\n\s*', '[', fixed)
+                fixed = re.sub(r'\s*\n\s*\]', ']', fixed)
+                fixed = re.sub(r'\{\s*\n\s*', '{', fixed)
+                fixed = re.sub(r'\s*\n\s*\}', '}', fixed)
+                return json.loads(fixed)
+            except json.JSONDecodeError as e:
+                logger.debug(f"Second fix failed: {e}")
                 pass
 
-        return {"raw": text, "error": "Failed to parse JSON"}
+        return {"raw": text, "error": "Failed to parse JSON after multiple attempts"}
+
+    def _log_raw_response(self, agent_name, prompt, raw_response):
+        """Сохраняет сырой ответ LLM в файл для отладки."""
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        filename = f"{agent_name}_{timestamp}.txt"
+        filepath = self.log_dir / filename
+        
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(f"=== PROMPT ===\n{prompt}\n\n=== RAW RESPONSE ===\n{raw_response}\n")
+        
+        logger.info(f"Raw response saved to: {filepath}")
